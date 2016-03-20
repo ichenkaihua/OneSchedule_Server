@@ -1,0 +1,182 @@
+group 'com.github.ichenkaihua'
+
+
+
+apply plugin: 'war'
+apply plugin: 'org.akhikhl.gretty'
+apply plugin: 'org.flywaydb.flyway'
+
+
+
+
+repositories {
+    mavenCentral()
+}
+configurations {
+
+    mybatisGenerator
+}
+
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+//配置插件仓库
+buildscript {
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'mysql:mysql-connector-java:5.1.37'
+        classpath 'org.akhikhl.gretty:gretty:1.2.4'
+        classpath 'org.flywaydb:flyway-gradle-plugin:3.2.1'
+        classpath 'org.avaje.ebeanorm:avaje-ebeanorm-typequery-agent:1.5.1'
+
+    }
+
+
+}
+
+
+
+task wrapper(type: org.gradle.api.tasks.wrapper.Wrapper) {
+    gradleVersion = "2.9"
+}
+
+
+
+
+
+
+
+
+
+
+
+def getDbProperties = {
+    def properties = new Properties()
+    def dbPropertiesPath =  sourceSets.main.resources.srcDirs[0].path;
+    file("$dbPropertiesPath/db-mysql.properties").withInputStream { inputStream ->
+        properties.load(inputStream)
+    }
+
+    properties;
+
+}
+
+
+
+
+
+
+task printDebug << {
+
+    println project['env']
+
+    def properties = getDbProperties();
+    properties.each {
+        println "${it.key}:${it.value}";
+    }
+
+
+}
+
+
+task mybatisGenerate << {
+
+
+    def properties = getDbProperties()
+
+
+
+    ant.properties['targetProject'] = projectDir.path
+    ant.properties['driverClass'] = properties.getProperty("jdbc.driverClassName")
+    ant.properties['connectionURL'] = properties.getProperty("jdbc.url")
+    ant.properties['userId'] = properties.getProperty("jdbc.user")
+    ant.properties['password'] = properties.getProperty("jdbc.pass")
+    ant.properties['src_main_java'] = sourceSets.main.java.srcDirs[0].path
+    ant.properties['src_main_resources'] = sourceSets.main.resources.srcDirs[0].path
+    ant.properties['modelPackage'] = this.modelPackage
+    ant.properties['mapperPackage'] = this.mapperPackage
+    ant.properties['sqlMapperPackage'] = this.sqlMapperPackage
+
+    ant.taskdef(
+            name: 'mbgenerator',
+            classname: 'org.mybatis.generator.ant.GeneratorAntTask',
+            classpath: configurations.mybatisGenerator.asPath
+    )
+    ant.mbgenerator(overwrite: true,
+            configfile: 'db/generatorConfig.xml', verbose: true) {
+        propertyset {
+            propertyref(name: 'targetProject')
+            propertyref(name: 'userId')
+            propertyref(name: 'driverClass')
+            propertyref(name: 'connectionURL')
+            propertyref(name: 'password')
+            propertyref(name: 'src_main_java')
+            propertyref(name: 'src_main_resources')
+            propertyref(name: 'modelPackage')
+            propertyref(name: 'mapperPackage')
+            propertyref(name: 'sqlMapperPackage')
+
+        }
+    }
+}
+
+
+
+
+
+
+flyway {
+
+    def properties = getDbProperties();
+
+    url = properties.getProperty("jdbc.url")
+    user = properties.getProperty("jdbc.user")
+    password = properties.getProperty("jdbc.pass")
+    locations = ['filesystem:db/migration']
+
+
+}
+
+war {
+    archiveName = "oneschedule.war"
+}
+
+//gretty设置
+gretty {
+    port = 8080
+    contextPath = "/"
+    fastReload = true
+}
+
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+
+
+    compile 'org.slf4j:slf4j-log4j12:1.7.12'
+    compile "org.springframework:spring-orm:4.1.7.RELEASE"
+    compile 'mysql:mysql-connector-java:5.1.37'
+    compile 'commons-fileupload:commons-fileupload:1.3.1'
+    compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'org.mybatis:mybatis-spring:1.2.3'
+    compile 'org.mybatis:mybatis:3.3.0'
+    compile 'com.github.pagehelper:pagehelper:4.0.3'
+    compile 'tk.mybatis:mapper:3.3.2'
+
+    compile 'org.springframework:spring-aop:4.1.7.RELEASE'
+    testCompile 'org.springframework:spring-test:4.1.7.RELEASE'
+    compile 'org.springframework:spring-webmvc:4.1.7.RELEASE'
+    compile 'javax.servlet:javax.servlet-api:3.1.0'
+    compile 'org.aspectj:aspectjweaver:1.8.6'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.6.1'
+
+    mybatisGenerator 'org.mybatis.generator:mybatis-generator-core:1.3.2'
+    mybatisGenerator 'mysql:mysql-connector-java:5.1.36'
+    mybatisGenerator 'tk.mybatis:mapper:3.3.2'
+
+
+}
