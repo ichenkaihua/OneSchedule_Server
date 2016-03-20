@@ -20,6 +20,9 @@ configurations {
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
+
+
+
 //配置插件仓库
 buildscript {
 

@@ -40,7 +40,8 @@ public class UserController {
      * @param password 密码
      * @return
      */
-    public ResponseEntity login(@RequestParam String phone, String password) {
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity login(@RequestParam String phone,@RequestParam String password) {
         User user = new User();
         user.setPhone(phone);
         user.setPassword(password);
