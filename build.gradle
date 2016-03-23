@@ -86,7 +86,7 @@ task generateDbPropertiesFile << {
     //否则，不做更改
     if (!file.exists()) {
         file.createNewFile();
-        initDBPropertiesFile;
+        initDBPropertiesFile(file);
     } else println "配置文件已存在，程序不做改变"
 }
 
@@ -100,7 +100,15 @@ task generateDbPropertiesFile << {
 def getDbProperties = {
     def properties = new Properties()
     def dbPropertiesPath = sourceSets.main.resources.srcDirs[0].path;
-    file("$dbPropertiesPath/db-mysql.properties").withInputStream { inputStream ->
+
+    def file  = file("$dbPropertiesPath/db-mysql.properties")
+
+    if(!file.exists()) {
+        file.createNewFile()
+        initDBPropertiesFile(file)
+    }
+
+    file.withInputStream { inputStream ->
         properties.load(inputStream)
     }
 
