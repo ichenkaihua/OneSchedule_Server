@@ -70,7 +70,7 @@ public class StatelessRealm extends AuthorizingRealm {
     @Override
     public boolean supports(AuthenticationToken token) {
 
-        boolean result = token instanceof StatelessToken;
+        boolean result = token instanceof MyToken;
 
         return result;
 

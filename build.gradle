@@ -58,10 +58,10 @@ def initDBPropertiesFile = { File file ->
     file.withOutputStream {
         file.withOutputStream {
             Properties properties = new Properties();
-            def driverName = ""
-            def user = ""
-            def url = ""
-            def pass = ""
+            def driverName = "com.mysql.jdbc.Driver"
+            def user = "root"
+            def url = "jdbc:mysql://localhost:3306/one_schedule"
+            def pass = "root"
 
             if (project.hasProperty("jdbc.driverClassName")) driverName = project['jdbc.driverClassName']
             if (project.hasProperty("jdbc.url")) url = project['jdbc.url']
@@ -101,9 +101,9 @@ def getDbProperties = {
     def properties = new Properties()
     def dbPropertiesPath = sourceSets.main.resources.srcDirs[0].path;
 
-    def file  = file("$dbPropertiesPath/db-mysql.properties")
+    def file = file("$dbPropertiesPath/db-mysql.properties")
 
-    if(!file.exists()) {
+    if (!file.exists()) {
         file.createNewFile()
         initDBPropertiesFile(file)
     }
