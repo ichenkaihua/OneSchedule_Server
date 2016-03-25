@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.github.ichenkaihua.oneschedule.mapper.ImageResourceMapper" >
-  <resultMap id="BaseResultMap" type="com.github.ichenkaihua.oneschedule.entity.ImageResource" >
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.ichenkaihua.oneschedule.mapper.ImageResourceMapper">
+  <resultMap id="BaseResultMap" type="com.github.ichenkaihua.oneschedule.entity.ImageResource">
     <!--
       WARNING - @mbggenerated
     -->
-    <id column="ir_id" property="id" jdbcType="INTEGER" />
-    <result column="ir_path" property="path" jdbcType="VARCHAR" />
-    <result column="ir_upload_time" property="uploadTime" jdbcType="TIMESTAMP" />
-    <result column="ir_user_id" property="userId" jdbcType="INTEGER" />
+    <id column="ir_id" jdbcType="INTEGER" property="id" />
+    <result column="ir_path" jdbcType="VARCHAR" property="path" />
+    <result column="ir_upload_time" jdbcType="TIMESTAMP" property="uploadTime" />
+    <result column="ir_user_id" jdbcType="INTEGER" property="userId" />
   </resultMap>
 </mapper>

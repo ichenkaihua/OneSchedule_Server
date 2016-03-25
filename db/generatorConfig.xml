@@ -56,6 +56,11 @@
             <columnRenamingRule searchString="^ir_" replaceString="" />
         </table>
 
+        <table tableName="authentication" >
+            <generatedKey column="ac_id" sqlStatement="Mysql" identity="true"/>
+            <columnRenamingRule searchString="^ac_" replaceString="" />
+        </table>
+
 
 
     </context>
