@@ -14,5 +14,6 @@
     <result column="u_last_time" jdbcType="TIMESTAMP" property="lastTime" />
     <result column="u_create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="u_state" jdbcType="INTEGER" property="state" />
+    <result column="u_salt" jdbcType="VARCHAR" property="salt" />
   </resultMap>
 </mapper>

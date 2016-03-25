@@ -7,7 +7,8 @@ CREATE TABLE user(
   u_avatar_id                   INT(11),
   u_last_time                   DATETIME,
   u_create_time                 DATETIME,
-  u_state                       INT(11) DEFAULT '0'
+  u_state                       INT(11) DEFAULT '0',
+  u_salt                       VARCHAR(10)
 );
 CREATE TABLE image_resource(
   ir_id                          INT(11) AUTO_INCREMENT PRIMARY KEY NOT NULL ,

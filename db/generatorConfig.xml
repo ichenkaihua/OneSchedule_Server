@@ -46,20 +46,22 @@
 
         <javaClientGenerator targetPackage="${mapperPackage}" targetProject="${src_main_java}" type="XMLMAPPER"/>
 
-        <table tableName="user" >
-            <generatedKey column="u_id" sqlStatement="Mysql" identity="true"/>
-            <columnRenamingRule searchString="^u_" replaceString="" />
-        </table>
+        <!--
+     <table tableName="user" >
+          <generatedKey column="u_id" sqlStatement="Mysql" identity="true"/>
+          <columnRenamingRule searchString="^u_" replaceString="" />
+      </table>
 
-        <table tableName="image_resource" >
-            <generatedKey column="ir_id" sqlStatement="Mysql" identity="true"/>
-            <columnRenamingRule searchString="^ir_" replaceString="" />
-        </table>
 
-        <table tableName="authentication" >
-            <generatedKey column="ac_id" sqlStatement="Mysql" identity="true"/>
-            <columnRenamingRule searchString="^ac_" replaceString="" />
-        </table>
+      <table tableName="image_resource" >
+          <generatedKey column="ir_id" sqlStatement="Mysql" identity="true"/>
+          <columnRenamingRule searchString="^ir_" replaceString="" />
+      </table>
+
+      <table tableName="authentication" >
+          <generatedKey column="ac_id" sqlStatement="Mysql" identity="true"/>
+          <columnRenamingRule searchString="^ac_" replaceString="" />
+      </table>-->
 
 
 
