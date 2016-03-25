@@ -22,6 +22,11 @@ configurations {
 
 
 
+ext {
+    db_properties_name = 'db-mysql.properties'
+
+}
+
 
 //配置插件仓库
 buildscript {
@@ -47,8 +52,45 @@ task wrapper(type: org.gradle.api.tasks.wrapper.Wrapper) {
     gradleVersion = "2.9"
 }
 
+/**
+ * 初始化mysql-db.properties文件
+ * 如果系统有相应属性(%GUSER_HOME%/.gradle/gradle.propeties)， 则添加到文件中，否则填入空字符
+ */
+def initDBPropertiesFile = { File file ->
+    file.withOutputStream {
+        file.withOutputStream {
+            Properties properties = new Properties();
+            def driverName = "com.mysql.jdbc.Driver"
+            def user = "root"
+            def url = "jdbc:mysql://localhost:3306/one_schedule"
+            def pass = "root"
+
+            if (project.hasProperty("jdbc.driverClassName")) driverName = project['jdbc.driverClassName']
+            if (project.hasProperty("jdbc.url")) url = project['jdbc.url']
+            if (project.hasProperty("jdbc.user")) user = project['jdbc.user']
+            if (project.hasProperty('jdbc.pass')) pass = project['jdbc.pass']
+
+            properties.put("jdbc.driverClassName", driverName)
+            properties.put("jdbc.url", url)
+            properties.put("jdbc.user", user)
+            properties.put("jdbc.pass", pass)
+            properties.store(it, "this file generator on " + new Date().toString())
+        }
+    }
+}
 
 
+
+
+task generateDbPropertiesFile << {
+    def file = file("src/main/resources/${project['db_properties_name']}")
+    //如果不存在，则新建，并把默认内容填入配置文件中
+    //否则，不做更改
+    if (!file.exists()) {
+        file.createNewFile();
+        initDBPropertiesFile(file);
+    } else println "配置文件已存在，程序不做改变"
+}
 
 
 
@@ -59,8 +101,16 @@ task wrapper(type: org.gradle.api.tasks.wrapper.Wrapper) {
 
 def getDbProperties = {
     def properties = new Properties()
-    def dbPropertiesPath =  sourceSets.main.resources.srcDirs[0].path;
-    file("$dbPropertiesPath/db-mysql.properties").withInputStream { inputStream ->
+    def dbPropertiesPath = sourceSets.main.resources.srcDirs[0].path;
+
+    def file = file("$dbPropertiesPath/db-mysql.properties")
+
+    if (!file.exists()) {
+        file.createNewFile()
+        initDBPropertiesFile(file)
+    }
+
+    file.withInputStream { inputStream ->
         properties.load(inputStream)
     }
 
@@ -180,6 +230,8 @@ dependencies {
     mybatisGenerator 'org.mybatis.generator:mybatis-generator-core:1.3.2'
     mybatisGenerator 'mysql:mysql-connector-java:5.1.36'
     mybatisGenerator 'tk.mybatis:mapper:3.3.2'
+
+    compile 'org.apache.shiro:shiro-spring:1.2.4'
 
 
 }

@@ -40,16 +40,15 @@ public class UserController {
      * @param password 密码
      * @return
      */
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value = "",method = RequestMethod.GET)
     public ResponseEntity login(@RequestParam String phone,@RequestParam String password) {
-        User user = new User();
-        user.setPhone(phone);
-        user.setPassword(password);
-        if (userService.hasRegister(phone)) {
+
+        if (!userService.hasRegister(phone)) {
             return ResponseEntity.status(Status.STATUS_1).build();
         } else {
+            User user = userService.getUserByPhonePassword(phone, password);
             List<User> select = userService.select(user);
-            if (select == null || select.isEmpty()) {
+            if (select == null ) {
                 return ResponseEntity.status(Status.STATUS_2).build();
             }
             return ResponseEntity.ok(select.get(0));

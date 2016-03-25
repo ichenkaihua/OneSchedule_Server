@@ -1,5 +1,7 @@
 package com.github.ichenkaihua.oneschedule.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Date;
 import javax.persistence.*;
 
@@ -13,6 +15,7 @@ public class User {
     @Column(name = "u_name")
     private String name;
 
+    @JsonIgnore
     @Column(name = "u_password")
     private String password;
 
@@ -33,6 +36,10 @@ public class User {
 
     @Column(name = "u_state")
     private Integer state;
+
+    @JsonIgnore
+    @Column(name = "u_salt")
+    private String salt;
 
     /**
      * @return u_id
@@ -158,5 +165,19 @@ public class User {
      */
     public void setState(Integer state) {
         this.state = state;
+    }
+
+    /**
+     * @return u_salt
+     */
+    public String getSalt() {
+        return salt;
+    }
+
+    /**
+     * @param salt
+     */
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 }

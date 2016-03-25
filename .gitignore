@@ -4,6 +4,8 @@
 
 *.iml
 
+# 数据库配置信息，不应该放在公共仓库
+/src/main/resources/db-mysql.properties
 
 
 ## Directory-based project format:
