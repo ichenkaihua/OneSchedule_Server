@@ -1,5 +1,6 @@
 package com.github.ichenkaihua.oneschedule.controller;
 
+import com.github.ichenkaihua.oneschedule.bean.BaseResponse;
 import com.github.ichenkaihua.oneschedule.constance.Status;
 import com.github.ichenkaihua.oneschedule.entity.User;
 import com.github.ichenkaihua.oneschedule.service.UserService;
@@ -26,9 +27,9 @@ public class UserController {
     public ResponseEntity register(@RequestParam String phone, @RequestParam String password) {
         if (!userService.hasRegister(phone)) {
             User user = userService.addUser(phone, password);
-            return ResponseEntity.ok(user);
+            return BaseResponse.buildSuccessResponse(user).toResponseEntity();
         } else {
-            return ResponseEntity.status(Status.STATUS_1).build();
+            return BaseResponse.buildFailResponse(Status.STATUS_1, "您已注册过，无需重写注册").toResponseEntity();
         }
 
     }
@@ -36,29 +37,35 @@ public class UserController {
 
     /**
      * 登陆用户
-     * @param phone 电话号码
+     *
+     * @param phone    电话号码
      * @param password 密码
      * @return
      */
-    @RequestMapping(value = "",method = RequestMethod.GET)
-    public ResponseEntity login(@RequestParam String phone,@RequestParam String password) {
+    @RequestMapping(value = "{phone}", method = RequestMethod.GET,params = "password")
+    public ResponseEntity login(@PathVariable String phone, @RequestParam String password) {
 
         if (!userService.hasRegister(phone)) {
-            return ResponseEntity.status(Status.STATUS_1).build();
+            return BaseResponse.buildFailResponse(Status.STATUS_1, "你还没有注册").toResponseEntity();
         } else {
             User user = userService.getUserByPhonePassword(phone, password);
             List<User> select = userService.select(user);
-            if (select == null ) {
-                return ResponseEntity.status(Status.STATUS_2).build();
+            if (select == null) {
+                return BaseResponse.buildFailResponse(Status.STATUS_2, "密码不正确").toResponseEntity();
             }
-            return ResponseEntity.ok(select.get(0));
+            return BaseResponse.buildSuccessResponse(select.get(0)).toResponseEntity();
         }
     }
 
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public User getUser(@PathVariable int id) {
-        return userService.getUserById(id);
+    public ResponseEntity getUser(@PathVariable int id) {
+        return BaseResponse.buildSuccessResponse(userService.getUserById(id)).toResponseEntity();
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity getUsers() {
+        return BaseResponse.buildSuccessResponse(userService.selectAll()).toResponseEntity();
     }
 
 
