@@ -1,13 +1,17 @@
 package com.github.ichenkaihua.oneschedule.controller;
 
 import com.github.ichenkaihua.oneschedule.bean.BaseResponse;
+import com.github.ichenkaihua.oneschedule.compoment.SpringContextUtil;
 import com.github.ichenkaihua.oneschedule.constance.Status;
 import com.github.ichenkaihua.oneschedule.entity.User;
 import com.github.ichenkaihua.oneschedule.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -35,6 +39,21 @@ public class UserController {
     }
 
 
+    @RequestMapping(value = "image", method = RequestMethod.POST)
+    public ResponseEntity uploadFiles(@RequestParam("file") MultipartFile[] files, HttpServletRequest request) {
+        try {
+            String content_type = request.getHeader("Content-Type");
+
+            userService.uploadFIle(files);
+            return BaseResponse.buildSuccessResponse("上传成功,工上传了"+files.length+"个文件").toResponseEntity();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return BaseResponse.buildFailResponse(Status.STATUS_1,"发生exception:"+e.getMessage()).toResponseEntity();
+        }
+
+    }
+
+
     /**
      * 登陆用户
      *
@@ -42,7 +61,7 @@ public class UserController {
      * @param password 密码
      * @return
      */
-    @RequestMapping(value = "{phone}", method = RequestMethod.GET,params = "password")
+    @RequestMapping(value = "{phone}", method = RequestMethod.GET, params = "password")
     public ResponseEntity login(@PathVariable String phone, @RequestParam String password) {
 
         if (!userService.hasRegister(phone)) {
