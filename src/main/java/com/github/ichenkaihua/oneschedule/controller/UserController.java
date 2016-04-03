@@ -43,12 +43,22 @@ public class UserController {
     public ResponseEntity uploadFiles(@RequestParam("file") MultipartFile[] files, HttpServletRequest request) {
         try {
             String content_type = request.getHeader("Content-Type");
-
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("共接收到"+files.length+"个文件");
+            stringBuilder.append('\n');
+            for (int i = 0; i < files.length; i++) {
+                stringBuilder.append("file["+(i+1)+"] : name:"+files[i].getOriginalFilename()+";" +
+                        " content-type:"+files[i].getName()+"；size:"+files[i].getSize());
+                stringBuilder.append('\n');
+                stringBuilder.append('\n');
+            }
+            if(files.length>0)
+            stringBuilder.deleteCharAt(stringBuilder.lastIndexOf("\n"));
             userService.uploadFIle(files);
-            return BaseResponse.buildSuccessResponse("上传成功,工上传了"+files.length+"个文件").toResponseEntity();
+            return BaseResponse.buildSuccessResponse(stringBuilder.toString()).toResponseEntity();
         } catch (IOException e) {
             e.printStackTrace();
-            return BaseResponse.buildFailResponse(Status.STATUS_1,"发生exception:"+e.getMessage()).toResponseEntity();
+            return BaseResponse.buildFailResponse(Status.STATUS_1, "发生exception:" + e.getMessage()).toResponseEntity();
         }
 
     }
