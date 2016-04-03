@@ -80,19 +80,22 @@ public class UserService extends BaseService<UserMapper, User> {
 
     public void uploadFIle(MultipartFile[] files) throws IOException {
         String servletContextRealPath = SpringContextUtil.getServletContextRealPath();
-        logger.debug("files size="+files.length);
+        logger.debug("files size=" + files.length);
 
-        for (MultipartFile file : files) {
-            logger.debug("file name"+file.getOriginalFilename());
-            logger.debug("file type:"+file.getContentType());
-            logger.debug("file size:"+file.getSize());
-            File toFile = new File(servletContextRealPath+"/image"+file.getOriginalFilename());
-            file.transferTo(toFile);
-            logger.debug("toFile path:"+toFile.getAbsolutePath());
+        File folder = new File(servletContextRealPath + "/files/");
+
+        if (!folder.exists()) {
+            folder.mkdirs();
         }
 
-
-
+        for (MultipartFile file : files) {
+            logger.debug("file name" + file.getOriginalFilename());
+            logger.debug("file type:" + file.getContentType());
+            logger.debug("file size:" + file.getSize());
+            File toFile = new File(folder,file.getOriginalFilename());
+            file.transferTo(toFile);
+            logger.debug("toFile path:" + toFile.getAbsolutePath());
+        }
 
 
     }
